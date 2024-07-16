@@ -4,12 +4,12 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 $config = require __DIR__ . '/config/config.php';
 
+use App\Models\DataModel;
 use App\Api\ApiClient;
-use App\Database\Database;
-use App\Service\DataService;
+use App\Controllers\DataController;
 
-$database = new Database($config);
+$dataModel = new DataModel($config);
 $apiClient = new ApiClient($config['apiUrl']);
-$dataService = new DataService($apiClient, $database);
+$dataController = new DataController($dataModel, $apiClient);
 
-$dataService->processData();
+$dataController->fetchData();

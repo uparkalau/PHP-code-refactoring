@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Database;
+namespace App\Models;
 
 use PDO;
 use PDOException;
 use App\Logger\Logger;
 
-class Database {
+class DataModel {
     private ?PDO $conn = null;
 
     public function __construct(array $config) {
@@ -17,8 +17,9 @@ class Database {
                 $config['dbPass']
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            Logger::log("[" . date('Y-m-d H:i:s') . "] Database connection successful.");
         } catch (PDOException $e) {
-            Logger::log($e->getMessage());
+            Logger::log("[" . date('Y-m-d H:i:s') . "] " . $e->getMessage());
             echo "A database connection error occurred. Please try again later.";
         }
     }
@@ -38,9 +39,14 @@ class Database {
             $this->conn->commit();
         } catch (PDOException $e) {
             $this->conn->rollBack();
-            Logger::log($e->getMessage());
-            echo "Error: " . $e->getMessage();
+            Logger::log("[" . date('Y-m-d H:i:s') . "] " . $e->getMessage());
+            echo "An error occurred while saving data. Please try again later.";
         }
+    }
+
+    public function fetchAllData(): array {
+        $stmt = $this->conn->query("SELECT title, description, price FROM items");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function __destruct() {
