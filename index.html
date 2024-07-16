@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Data Fetch</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Fetch Data from API</h1>
+        <button id="fetchDataBtn" class="btn btn-primary mb-4">Fetch Data</button>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody id="dataTable">
+                
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#fetchDataBtn').click(function() {
+                $.ajax({
+                    url: 'fetch_data.php',
+                    method: 'GET',
+                    success: function(data) {
+                        const items = JSON.parse(data);
+                        let tableContent = '';
+                        items.forEach(item => {
+                            tableContent += `
+                                <tr>
+                                    <td>${item.title}</td>
+                                    <td>${item.description}</td>
+                                    <td>${item.price}</td>
+                                </tr>
+                            `;
+                        });
+                        $('#dataTable').html(tableContent);
+                    },
+                    error: function(error) {
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
